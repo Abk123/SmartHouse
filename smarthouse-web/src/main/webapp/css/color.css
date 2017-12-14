@@ -1,0 +1,27 @@
+.sidebar .title-color {
+	background-color: limegreen;
+}
+.sidebar .title-text-color {
+	color: white;
+}
+
+.block-devider-color{
+	color: lightgray;
+}
+
+.dashboard-btn-color{
+	color: limegreen;
+	border-color: limegreen;
+}
+
+.white-text{
+	color: white;
+}
+
+.color-green{
+	color: green;
+}
+
+.color-red{
+	color: red;
+}

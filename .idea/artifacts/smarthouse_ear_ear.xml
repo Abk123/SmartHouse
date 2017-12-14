@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="ear" name="smarthouse-ear:ear">
+    <output-path>$PROJECT_DIR$/smarthouse-ear/target</output-path>
+    <root id="archive" name="smarthouse-ear-1.0.0-SNAPSHOT.ear">
+      <element id="artifact" artifact-name="smarthouse-ear:ear exploded" />
+    </root>
+  </artifact>
+</component>

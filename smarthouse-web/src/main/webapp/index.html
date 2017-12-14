@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="cp1251">
+    <meta name="Description" content="Страница мониторинга и управления элементами умного дома">
+    <meta name="Keywords" content="smart house, internet of things, javaee">
+    <title>Smart House Control</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="css/base.css" rel="stylesheet" type="text/css">
+    <link href="lib/KendoUI/styles/kendo.common.min.css" rel="stylesheet" type="text/css">
+    <link href="lib/KendoUI/styles/kendo.default.min.css" rel="stylesheet" type="text/css">
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        html {
+            background: url(img/index-bg.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+    </style>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        function RedirNonHttps() {
+            if (location.href.indexOf("https://") === -1) {
+                location.href = "https://www.bogunino84.net.ru:7002";
+            }
+        }
+
+        //]]>
+
+    </script>
+
+</head>
+<body onload="RedirNonHttps()">
+<div class="vertical-container">
+    <div class="vertical-align">
+        <figure class="text-center" style="min-width: 500px"><img src="img/logo-inverted.png" class="img-max-size"
+                                                                  alt="Logo">
+            <figcaption>
+                <h3 class="white-text"><span class="white-text">C<span style="color: #66cc33">o</span>ntrolr</span> -
+                    это программа управления элементами умного дома.<br>
+                    Чтобы продолжить работу нажмите <span style="color: #66cc33"><b>Далее</b></span>. Нажмите <span
+                            style="color: #66cc33"><b>Демо</b></span>, чтобы войти в демо режим.</h3>
+            </figcaption>
+            <form method="POST" action="PageNavigateController">
+                <button id="demoBtn" name="toDemoPageBtn" class="navi-button k-primary">Демо<span
+                        class="k-icon k-i-unlock"></span></button>
+                <button id="nextButton" name="toLoginPageBtn" class=" navi-button k-primary">Далее<span
+                        class="k-icon k-i-arrow-chevron-right"></span></button>
+            </form>
+        </figure>
+    </div>
+</div>
+</body>
+</html>

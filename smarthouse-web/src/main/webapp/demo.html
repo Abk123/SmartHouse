@@ -1,0 +1,328 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Smarthouse Control. Demo page</title>
+    <link href="css/base.css" rel="stylesheet" type="text/css">
+    <link href="lib/KendoUI/styles/kendo.common.min.css" rel="stylesheet" type="text/css">
+    <link href="lib/KendoUI/styles/kendo.default.min.css" rel="stylesheet" type="text/css">
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="lib/JQuery/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="lib/KendoUI/js/kendo.all.min.js"></script>
+    <style type="text/css">
+        html {
+            background: url(img/bg.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+    </style>
+    <script>
+
+        // Процедура обновления размеров элементов
+        function resizeComponents() {
+            "use strict";
+            kendo.resize($('#dm-accum-voltage-chart'));
+            kendo.resize($('#dm-accum-temp-chart'));
+        }
+
+        $(document).ready(function () {
+            var accumVoltage;
+            var accumTemperature;
+
+            // ************************************ Данные об устройстве Доминатор ************************************
+            // Получить данные об устройстве Доминатор
+            function requestDmDeviseInfo() {
+                jQuery.getJSON("/EnergyMonitoringController", "action=DM_DEVICE_INFO", function (data) {
+
+                    //console.info("DM_DEVICE_INFO OK");
+
+                    $('#dm-verpow').html(data.verpow);
+                    $('#dm-verpo').html(data.verpo);
+                    $('#dm-pow').html(data.pow);
+                    $('#dm-uacc').html(data.uacc);
+                    $('#dm-verplatpic').html(data.verplatpic);
+                    $('#dm-verplatnet').html(data.verplatnet);
+
+                    var $dm_temp_okr = $('#dm-temp-okr');
+                    if (data.em_temp_okr === 'ON') {
+                        $dm_temp_okr.html('<i class="fa fa-lg fa-toggle-on" aria-hidden="true"></i>');
+                        $dm_temp_okr.removeClass('color-red');
+                        $dm_temp_okr.addClass('color-green');
+                    }
+                    else {
+                        $dm_temp_okr.html('<i class="fa fa-lg fa-toggle-off" aria-hidden="true"></i>');
+                        $dm_temp_okr.removeClass('color-green');
+                        $dm_temp_okr.addClass('color-red');
+                    }
+
+                    var $dm_temp_top = $('#dm-temp-top');
+                    if (data.em_temp_top === 'ON') {
+                        $dm_temp_top.html('<i class="fa fa-lg fa-toggle-on" aria-hidden="true"></i>');
+                        $dm_temp_top.removeClass('color-red');
+                        $dm_temp_top.addClass('color-green');
+                    }
+                    else {
+                        $dm_temp_top.html('<i class="fa fa-lg fa-toggle-off" aria-hidden="true"></i>');
+                        $dm_temp_top.removeClass('color-green');
+                        $dm_temp_top.addClass('color-red');
+                    }
+
+                    var $dm_temp_trad = $('#dm-temp-trad');
+                    if (data.em_temp_trad === 'ON') {
+                        $dm_temp_trad.html('<i class="fa fa-lg fa-toggle-on" aria-hidden="true"></i>');
+                        $dm_temp_trad.removeClass('color-red');
+                        $dm_temp_trad.addClass('color-green');
+                    }
+                    else {
+                        $dm_temp_trad.html('<i class="fa fa-lg fa-toggle-off" aria-hidden="true"></i>');
+                        $dm_temp_trad.removeClass('color-green');
+                        $dm_temp_trad.addClass('color-red');
+                    }
+
+                    $('#dm-tnet-on').html(data.t_net_on);
+                    $('#dm-tcharge').html(data.t_charge);
+                    $('#dm-taccdisch').html(data.t_accdisch);
+                });
+            }
+
+            // Получить точку для отображения на графике напряжения аккумулятора
+            function requestAccumVoltageValue() {
+                jQuery.getJSON("/EnergyMonitoringController", "action=CELL_UACCMED_LIVE", function (data) {
+
+                    accumVoltage = data.current_value;
+
+                    //console.info("accumVoltage=" + accumVoltage);
+
+                });
+            }
+
+            // Получить точку для отображения на графике тпемпературы аккумулятора
+            function requestAccumTemperatureValue() {
+                jQuery.getJSON("/EnergyMonitoringController", "action=CELL_ACCTEMP_LIVE", function (data) {
+
+                    accumTemperature = data.current_value;
+
+                    //console.info("accumTemperature=" + accumTemperature);
+
+                });
+            }
+
+            // Начальные присвоения
+            $.ajaxSetup({
+                async: false
+            });
+
+            requestDmDeviseInfo();
+            requestAccumVoltageValue();
+            requestAccumTemperatureValue();
+
+            $.ajaxSetup({
+                async: true
+            });
+
+            // *************************************** Напряжение аккумулятора ****************************************
+
+            // Создание графика напряжения аккумулдятора
+            function createAccumVoltageChart() {
+                $('#dm-accum-voltage-chart').kendoChart({
+                    legend: {
+                        visible: false
+                    },
+                    chartArea: {margin: 0, padding: 0, width: $('dm-accum-voltage-chart').attr("width")},
+                    series: [{
+                        type: "bullet",
+                        data: accumVoltage
+                    }],
+                    categoryAxis: {
+                        majorGridLines: {
+                            visible: false
+                        },
+                        majorTicks: {
+                            visible: false
+                        }
+                    },
+                    valueAxis: [{
+                        plotBands: [{
+                            from: 22, to: 23, color: "red", opacity: 0.3
+                        }, {
+                            from: 23, to: 25, color: "yellow", opacity: 0.3
+                        }, {
+                            from: 25, to: 28, color: "green", opacity: 0.3
+                        }],
+                        majorGridLines: {
+                            visible: false
+                        },
+                        min: 22,
+                        max: 28,
+                        minorTicks: {
+                            visible: true
+                        }
+                    }],
+                    tooltip: {
+                        visible: true,
+                        template: "#= value.current #"
+                    }
+                });
+            }
+
+            createAccumVoltageChart();
+
+            /************************************* Температура аккумулятора ******************************************/
+
+            // Создание графика температуры аккумулятора
+            function createAccumTemperatureChart() {
+                $('#dm-accum-temp-chart').kendoChart({
+                    legend: {
+                        visible: false
+                    },
+                    chartArea: {margin: 0, padding: 0, width: $('dm-accum-voltage-chart').attr("width")},
+                    series: [{
+                        type: "bullet",
+                        data: accumTemperature
+                    }],
+                    categoryAxis: {
+                        majorGridLines: {
+                            visible: false
+                        },
+                        majorTicks: {
+                            visible: false
+                        }
+                    },
+                    valueAxis: [{
+                        plotBands: [{
+                            from: 0, to: 5, color: "red", opacity: 0.3
+                        }, {
+                            from: 5, to: 10, color: "yellow", opacity: 0.3
+                        }, {
+                            from: 10, to: 30, color: "green", opacity: 0.3
+                        }, {
+                            from: 30, to: 35, color: "yellow", opacity: 0.3
+                        }, {
+                            from: 35, to: 50, color: "red", opacity: 0.3
+                        }],
+                        majorGridLines: {
+                            visible: false
+                        },
+                        min: 0,
+                        max: 50,
+                        minorTicks: {
+                            visible: true
+                        }
+                    }],
+                    tooltip: {
+                        visible: true,
+                        template: "#= value.current #"
+                    }
+                });
+            }
+
+            createAccumTemperatureChart();
+
+            // Установка времени считывания данных об устройстве Доминатор
+            var dmDeviceInfoInterval = setTimeout(function setDmDeviceInfoRequest() {
+                //console.info("DEVICE INFO Request!");
+                requestDmDeviseInfo();
+
+                dmDeviceInfoInterval = setTimeout(setDmDeviceInfoRequest, 60000);
+            }, 60000);
+
+            // Установка времени считывания данных для графика напряжения аккумулятора
+            var accumVoltageInterval = setTimeout(function setAccumVoltageRequest() {
+                //console.info("ACCUM VALUE Request!");
+                requestAccumVoltageValue();
+                //console.info("accumVoltage=" + accumVoltage);
+
+                //var chart=$("#dm-accum-voltage-chart").data("kendoChart");
+                //chart.redraw();
+                createAccumVoltageChart();
+                kendo.resize($('#dm-accum-voltage-chart'));
+
+                accumVoltageInterval = setTimeout(setAccumVoltageRequest, 60000);
+            }, 60000);
+
+            // Установка времени считывания данных для графика температуры аккумулятора
+            var accumTemperatureInterval = setTimeout(function setAccumTemperatureRequest() {
+                //console.info("ACCUM VALUE Request!");
+                requestAccumTemperatureValue();
+                //console.info("accumTemperature=" + accumTemperature);
+
+                //var chart=$("#dm-accum-voltage-chart").data("kendoChart");
+                //chart.redraw();
+                createAccumTemperatureChart();
+                kendo.resize($('#dm-accum-temp-chart'));
+
+                accumTemperatureInterval = setTimeout(setAccumTemperatureRequest, 60000);
+            }, 60000);
+
+            resizeComponents();
+        });
+
+        $(window).on("resize", function () {
+            "use strict";
+            //console.info("resize");
+            resizeComponents();
+
+        });
+    </script>
+</head>
+<body>
+<div class="dominator-header panel"> Доминатор</div>
+<section id="devide-dominator-section" class="content-data">
+    <div class="subtitle">Характеристики устройства</div>
+    <div class="infoline">Версия текущей модели POW
+        <div style="float: right; padding-right: 10px"><span id="dm-verpow"></span></div>
+    </div>
+    <div class="infoline" style="border-top-width: 0">Версия программного обеспечения
+        <div style="float: right; padding-right: 10px"><span id="dm-verpo"></span></div>
+    </div>
+    <div class="infoline" style="border-top-width: 0">Мощность устройства, кВт
+        <div style="float: right; padding-right: 10px"><span id="dm-pow"></span></div>
+    </div>
+    <div class="infoline" style="border-top-width: 0">Рабочее напряжение, В
+        <div style="float: right; padding-right: 10px"><span id="dm-uacc"></span></div>
+    </div>
+    <div class="infoline" style="border-top-width: 0">Версия платы с процессором
+        <div style="float: right; padding-right: 10px"><span id="dm-verplatpic"></span></div>
+    </div>
+    <div class="infoline" style="border-top-width: 0">Версия сетевой платы
+        <div style="float: right; padding-right: 10px"><span id="dm-verplatnet"></span></div>
+    </div>
+    <div class="subtitle">Текущее состояние устройства</div>
+    <div class="infoline-l">Напряжение аккумулятора, В
+        <div id="dm-accum-voltage-chart"></div>
+    </div>
+    <div class="infoline-r">Температура аккумулятора, &deg;С
+        <div id="dm-accum-temp-chart"></div>
+    </div>
+    <div class="infoline-l" style="border-top-width: 0">Датчик температуры аккумулятора
+        <div style="float: right; padding-right: 10px"><span id="dm-temp-okr"></span></div>
+    </div>
+    <div class="infoline-r" style="border-top-width: 0">Датчик температуры тора
+        <div style="float: right; padding-right: 10px"><span id="dm-temp-top"></span></div>
+    </div>
+    <div class="infoline-l" style="border-top-width: 0">Датчик температуры транзисторов
+        <div style="float: right; padding-right: 10px"><span id="dm-temp-trad"></span></div>
+    </div>
+    <div class="infoline-r" style="border-top-width: 0">Время на стабилизацию сети, сек.
+        <div style="float: right; padding-right: 10px"><span id="dm-tnet-on"></span></div>
+    </div>
+    <div class="infoline-l" style="border-top-width: 0">Время до начала заряда, сек.
+        <div style="float: right; padding-right: 10px"><span id="dm-tcharge"></span></div>
+    </div>
+    <div class="infoline-r" style="border-top-width: 0">Время работы на разряженном АКБ, сек.
+        <div style="float: right; padding-right: 10px"><span id="dm-taccdisch"></span></div>
+    </div>
+</section>
+<div class="text-center">
+    <form method="POST" action="PageNavigateController">
+        <div>
+            <button name="toRootPageBtn" class="navi-button k-primary" style="margin-top: 20px"><span
+                    class="k-icon k-i-arrow-chevron-left"></span>Назад
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

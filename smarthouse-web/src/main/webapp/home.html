@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Smarthouse Control Page</title>
+    <link href="../css/base.css" rel="stylesheet" type="text/css">
+    <link href="../lib/KendoUI/styles/kendo.common.min.css" rel="stylesheet" type="text/css">
+    <link href="../lib/KendoUI/styles/kendo.default.min.css" rel="stylesheet" type="text/css">
+    <link href="../lib/KendoUI/styles/kendo.default.mobile.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="../lib/JQuery/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../lib/KendoUI/js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="../lib/home.js"></script>
+</head>
+<body>
+<div class="panel sidebar">
+    <div class="sidebar-header title-color">
+        <h3 class="title-text-color">МЕНЮ</h3>
+    </div>
+    <div class="menu">
+        <ui id="panelbar">
+            <li id="dashboard-sidepanel-btn" class="k-link"><i class="fa fa-tachometer fa-lg fa-fw"
+                                                               aria-hidden="true"></i>Витрина
+            </li>
+            <li id="charts-sidepanel-btn" class="k-link"><i class="fa fa-pie-chart fa-lg fa-fw" aria-hidden="true"></i>Графики
+            </li>
+            <li id="devices-sidepanel-btn"><i class="fa fa-microchip fa-lg fa-fw" aria-hidden="true"></i>Устройства
+                <ul>
+                    <li id="dominator-sidepanel-btn" class="k-link"><i class="fa fa-superpowers fa-lg fa-fw"
+                                                                       aria-hidden="true"></i>Доминатор
+                    </li>
+                    <li id="sms-sidepanel-btn" class="k-link"><i class="fa fa-paper-plane-o fa-lg fa-fw"
+                                                                       aria-hidden="true"></i>СМС Центр
+                    </li>
+                </ul>
+            </li>
+            <li id="exit-sidepanel-btn" class="k-link"><i class="fa fa-power-off fa-lg fa-fw" aria-hidden="true"></i>Выход
+            </li>
+        </ui>
+    </div>
+</div>
+<div id="dashboard" class="content">
+    <div class="dashboard-header panel">
+        <div class="dashboard-header-top block-devider-color"><img src="../img/logo.png" alt="" height="36px"></div>
+        <div class="dashboard-header-bottom">
+            <div id="dashboard-home-btn" class="dashboard-btn dashboard-btn-color"><i class="fa fa-home fa-2x"
+                                                                                      aria-hidden="true"></i>
+                <p>Home</p>
+            </div>
+            <div id="dashboard-faviorites-btn" class="dashboard-btn dashboard-btn-color"><i class="fa fa-star-o fa-2x"
+                                                                                            aria-hidden="true"></i>
+                <p>Favorites</p>
+            </div>
+            <div id="dashboard-settings-btn" class="dashboard-btn dashboard-btn-color"><i class="fa fa-keyboard-o fa-2x"
+                                                                                          aria-hidden="true"></i>
+                <p>Settings</p>
+            </div>
+        </div>
+    </div>
+    <section id="dashboard-home-section" class="content-data">
+        <div class="chart-title">Потребление электроэнергии в режиме реального времени (Вт)</div>
+        <div id="dashboard-power-live-chart" class="block-devider-color"></div>
+        <div class="subtitle">Статус устройств</div>
+        <div class="infoline-l">Доминатор
+            <div style="float: right; padding-right: 10px"><span id="dominator-active"></span></div>
+        </div>
+        <div class="infoline-r">HP ILO
+            <div style="float: right; padding-right: 10px"><span id="hp_ilo-active"></span></div>
+        </div>
+        <div class="infoline-l" style="border-top-width: 0">WI-FI Роутер Netgear WNR3500L
+            <div style="float: right; padding-right: 10px"><span id="wnr3500l-active"></span></div>
+        </div>
+        <div class="infoline-r" style="border-top-width: 0">Коммутатор HP Switch PS1810-8G
+            <div style="float: right; padding-right: 10px"><span id="ps1810_8g-active"></span></div>
+        </div>
+        <div class="infoline-l" style="border-top-width: 0">Усилитель WI-FI TL WA850RE
+            <div style="float: right; padding-right: 10px"><span id="tl_wa850re-active"></span></div>
+        </div>
+        <div class="infoline-r" style="border-top-width: 0">Усилитель WI-FI Netgear WN2500RP
+            <div style="float: right; padding-right: 10px"><span id="wn2500rp-active"></span></div>
+        </div>
+        <div class="infoline-l" style="border-top-width: 0">СМС Центр
+            <div style="float: right; padding-right: 10px"><span id="sms-active"></span></div>
+        </div>
+
+    </section>
+    <section id="dashboard-favorites-section" class="content-data"> favorites</section>
+    <section id="dashboard-settings-section" class="content-data"> settings</section>
+</div>
+<div id="charts" class="content">
+    <div class="charts-header panel">Графики</div>
+    <section id="chart-section" class="content-data">
+        <div class="chart-title">Статистика потребления электроэнергии</div>
+        <div class="dm-stat-chart-params">
+            <label for="dm-stat-chart-fd"> С: </label>
+            <input id="dm-stat-chart-fd" title="С:" style="width: 160px">
+            <label for="dm-stat-chart-td"> По: </label>
+            <input id="dm-stat-chart-td" title="По:" style="width: 160px">
+            <label for="dm-stat-chart-cell"> Тип: </label>
+            <input id="dm-stat-chart-cell" title="Тип:" style="width: 300px">
+            <button id="dm-stat-chart-run">OK<span class="k-icon k-i-check"></span></button>
+        </div>
+        <div id="dashboard-stat-chart" class="block-devider-color"></div>
+        <span id="notification"></span></section>
+</div>
+<div id="dominator" class="content">
+    <div class="dominator-header panel"> Доминатор</div>
+    <section id="devide-dominator-section" class="content-data">
+        <div class="subtitle">Характеристики устройства</div>
+        <div class="infoline">Устройство обслуживается
+            <div style="float: right; padding-right: 10px"><input id="dm-enable-status"></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Версия текущей модели POW
+            <div style="float: right; padding-right: 10px"><span id="dm-verpow"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Версия программного обеспечения
+            <div style="float: right; padding-right: 10px"><span id="dm-verpo"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Мощность устройства, кВт
+            <div style="float: right; padding-right: 10px"><span id="dm-pow"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Рабочее напряжение, В
+            <div style="float: right; padding-right: 10px"><span id="dm-uacc"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Версия платы с процессором
+            <div style="float: right; padding-right: 10px"><span id="dm-verplatpic"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Версия сетевой платы
+            <div style="float: right; padding-right: 10px"><span id="dm-verplatnet"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Порт
+            <div style="float: right; padding-right: 10px"><span id="dm-port"></span></div>
+        </div>
+        <div class="subtitle">Текущее состояние устройства</div>
+        <div class="infoline-l">Напряжение аккумулятора, В
+            <div id="dm-accum-voltage-chart"></div>
+        </div>
+        <div class="infoline-r">Температура аккумулятора, &deg;С
+            <div id="dm-accum-temp-chart"></div>
+        </div>
+        <div class="infoline-l" style="border-top-width: 0">Датчик температуры аккумулятора
+            <div style="float: right; padding-right: 10px"><span id="dm-temp-okr"></span></div>
+        </div>
+        <div class="infoline-r" style="border-top-width: 0">Датчик температуры тора
+            <div style="float: right; padding-right: 10px"><span id="dm-temp-top"></span></div>
+        </div>
+        <div class="infoline-l" style="border-top-width: 0">Датчик температуры транзисторов
+            <div style="float: right; padding-right: 10px"><span id="dm-temp-trad"></span></div>
+        </div>
+        <div class="infoline-r" style="border-top-width: 0">Время на стабилизацию сети, сек.
+            <div style="float: right; padding-right: 10px"><span id="dm-tnet-on"></span></div>
+        </div>
+        <div class="infoline-l" style="border-top-width: 0">Время до начала заряда, сек.
+            <div style="float: right; padding-right: 10px"><span id="dm-tcharge"></span></div>
+        </div>
+        <div class="infoline-r" style="border-top-width: 0">Время работы на разряженном АКБ, сек.
+            <div style="float: right; padding-right: 10px"><span id="dm-taccdisch"></span></div>
+        </div>
+    </section>
+</div>
+<div id="sms" class="content">
+	<div class="sms-header panel">СМС Центр</div>
+	<section id="sms-section" class="content-data">
+	<div class="subtitle">Характеристики устройства</div>
+		<div class="infoline">Устройство обслуживается
+            <div style="float: right; padding-right: 10px"><input id="sms-enable-status"></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Устройство активно
+            <div style="float: right; padding-right: 10px"><span id="sms-active-status"></span></div>
+        </div>
+		<div class="infoline" style="border-top-width: 0">IP адрес
+			<div style="float: right; padding-right: 10px"><span id="sms-ip"></span></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Мобильный номер
+            <div style="float: right; padding-right: 10px"><input id="sms-mobile" class="kendo-textbox"></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Номер для оповещения
+            <div style="float: right; padding-right: 10px"><input id="sms-alarm" class="kendo-textbox"></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Периодичность проверки соединения, сек.
+            <div style="float: right; padding-right: 10px"><input id="sms-update-time" class="kendo-textbox"></div>
+        </div>
+        <div class="infoline" style="border-top-width: 0">Оправить тестовое СМС при инициализации
+            <div style="float: right; padding-right: 10px"><input id="sms-selftest-on-init" type="checkbox"></div>
+        </div>
+		<div class="infoline" style="border-top-width: 0">Оправить тестовое СМС
+            <div style="float: right; padding-right: 10px"><button id="sms-send-test-message">Отправить<span class="k-icon k-i-check"></span></button></div>
+        </div>
+	</section>
+</div>
+<div id="dialog"></div>
+</body>
+</html>

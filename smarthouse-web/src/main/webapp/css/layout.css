@@ -1,0 +1,243 @@
+.sidebar {
+	position: fixed;
+	width: 270px;
+	min-height: 100%;
+	height: 100%;
+}
+.sidebar .sidebar-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 272px;
+	height: 45px;
+}
+.sidebar h3 {
+	line-height: 0;
+	text-align: center;
+	padding-top: 3px;
+}
+.sidebar .menu {
+	position: fixed;
+	margin-top: 44px;
+	left: 0;
+	width: 272px;
+	padding: 0;
+}
+#panelbar {
+	top: 0;
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+}
+#panelbar .fa {
+	padding-right: 10px;
+}
+.content {
+	position: fixed;
+	left: 272px;
+	width: calc(100% - 272px);
+	height: 100%;
+	border: 0;
+	overflow: auto;
+}
+.content-data {
+	position: relative;
+	background: url(../img/bg.jpg);
+	padding: 10px;
+	height: 100%;
+	left: 2px;
+	top: 2px;
+	border: 0;
+}
+.dashboard-header, .dominator-header {
+	position: relative;
+	left: 0;
+	border: solid 1px;
+	padding: 0;
+	text-align: center;
+}
+.dashboard-header-top{
+	border: 0;
+	padding-top: 4px;
+	border-bottom: solid 1px;
+}
+.dashboard-header-bottom {
+	border: 0;
+}
+.dashboard-btn {
+	width: 150px;
+	border-bottom: solid 2px;
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 2px;
+	padding: 0;
+	line-height: 0;
+	cursor: pointer;
+}
+.dashboard-btn p {
+	letter-spacing: 0;
+	padding: 0;
+	margin: 8px;
+	font-weight: 400;
+	font-size: 12px;
+}
+.vertical-container {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+}
+.vertical-align {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.text-center {
+	text-align: center;
+}
+.navi-button {
+	min-height: 40px;
+	min-width: 100px;
+	margin: 0 5px;
+}
+.navi-button span {
+	padding: 0 4px;
+}
+.login-vertical-align {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#login-fieldlist {
+	text-align: left;
+	min-width: 400px;
+	padding: 0;
+}
+#login-fieldlist label{
+	font-size: 18px;
+}
+#login-fieldlist li {
+	list-style: none;
+	padding-bottom: 10px;
+}
+#login-fieldlist .k-textbox {
+	width: 100%;
+}
+.forbidden {
+	padding: 0;
+	margin: 0;
+	background: repeating-linear-gradient(45deg, darkred, darkred 2px, #330000 3px, #330000 8px);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+.spam {
+	background-color: lightgray;
+	border-radius: 5px;
+	margin: 0;
+	min-width: 80%;
+	cursor: not-allowed;
+}
+.text-spam {
+	color: red;
+	text-decoration: none;
+	cursor: not-allowed;
+}
+
+.login-complete-vertical-align {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.chart-title, .subtitle{
+	height: 40px;
+	border: 0;
+	width: 100%;
+	font-size: 18px;
+	font-weight: 500;
+	margin: 10px 0;
+	line-height: 34px;
+}
+
+.subtitle{
+	background-color: lightgray;
+	border: solid 1px;
+	border-color: darkgray;
+	width: calc(100% - 10px);
+	padding-left: 10px;
+}
+
+.infoline{
+	border: solid 1px;
+	border-color: darkgray;
+	width: calc(100% - 10px);
+	padding-left: 10px;
+	min-height: 44px;
+	font-size: 16px;
+	line-height: 36px;
+}
+
+.infoline .fa-2x{
+	line-height: 40px;
+}
+
+.infoline-l{
+	border: solid 1px;
+	border-color: darkgray;
+	width: calc(50% - 25px);
+	padding-left: 10px;
+	padding-right: 10px;
+	min-height: 44px;
+	font-size: 16px;
+	line-height: 36px;
+	float: left;
+}
+
+.infoline-l .fa-2x{
+	line-height: 40px;
+}
+
+.infoline-r{
+	border: solid 1px;
+	border-color: darkgray;
+	width: calc(50% - 25px);
+	padding-left: 10px;
+	padding-right: 10px;
+	min-height: 44px;
+	font-size: 16px;
+	line-height: 36px;
+	float: right;
+}
+
+.infoline-r .fa-2x{
+	line-height: 40px;
+}
+
+.charts-header, .dominator-header, .sms-header{
+	position: relative;
+	left: 0;
+	border: solid 1px;
+	padding: 0;
+	text-align: center;
+	height: 42px;
+	font-size: 17px;
+	font-weight: 500;
+	line-height: 46px;
+}
+
+.dm-stat-chart-params{
+	position: relative;
+	display: inline-block;
+	margin-bottom: 10px;
+}
+
+.kendo-textbox{
+	text-align: right;
+	width: 200px;
+}
+
