@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="war" name="smarthouse-web:war">
     <output-path>$PROJECT_DIR$/smarthouse-web/target</output-path>
-    <root id="archive" name="smarthouse-web-1.0.0-SNAPSHOT.war">
+    <root id="archive" name="smarthouse-web-1.0.0.war">
       <element id="artifact" artifact-name="smarthouse-web:war exploded" />
     </root>
   </artifact>

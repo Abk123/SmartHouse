@@ -4,12 +4,12 @@
     <parent>
     <artifactId>smarthouse</artifactId>
     <groupId>ru.net.bogunino84</groupId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
-    <groupId>ru.net.bogunino84</groupId>
+
     <artifactId>smarthouse-ejb</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>ejb</packaging>
 
     <name>smarthouse-ejb</name>

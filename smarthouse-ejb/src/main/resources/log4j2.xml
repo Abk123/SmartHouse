@@ -17,7 +17,7 @@
             <DefaultRolloverStrategy max="20"/>
 
         </RollingFile>
-        <RollingFile name='fileLogger' fileName='${basePath}/smarthouse.log'
+        <RollingFile name='fileLogger' fileName='${basePath}/smarthouse_ejb.log'
                      filePattern="${basePath}/$${date:yyyy-MM}/class-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <pattern>%-10sn [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} %-70C{4} %-40M(%-5L) - %msg%n</pattern>
@@ -41,7 +41,7 @@
             <appender-ref ref='fileLogger' level='ERROR' />
         </Logger>
 
-        <Logger name='ru.net.bogunino84.SMSBean' level='ALL' additivity='true'>
+        <Logger name='ru.net.bogunino84.SmarthouseBean' level='ERROR' additivity='true'>
             <appender-ref ref='fileLogger' level='ALL' />
         </Logger>
     </Loggers>

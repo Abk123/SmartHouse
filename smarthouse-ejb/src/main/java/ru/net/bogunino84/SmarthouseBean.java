@@ -8,8 +8,10 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.*;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.*;
 
 /**
  * Основной класс Умный Дом
@@ -22,6 +24,7 @@ import java.sql.SQLException;
 public class SmarthouseBean {
     public SmarthouseBean() {
     }
+
 
     @Resource
     private TimerService timerService;
@@ -78,8 +81,30 @@ public class SmarthouseBean {
             applog_.error(e.getLocalizedMessage());
         }
 
+        // включаем мониторинг
+        applog_.info("Включаем мониторинг");
         createTimersForIpDevices();
+        createTimersForMonitoring();
 
+    }
+
+
+    @SuppressWarnings("Duplicates")
+    @PreDestroy
+    private void destroy() {
+        applog_.info("Завершение работы класса SmarthouseBean");
+
+        try {
+            if (connection_ != null && !connection_.isClosed()) {
+                applog_.info(String.format("Закрываем соединение с базой данных. Схема БД: %s", connection_.getSchema()));
+                connection_.close();
+                applog_.info("Соединение с базой данных закрыто");
+            }
+        } catch (SQLException e) {
+            applog_.error(e.getLocalizedMessage());
+        }
+
+        applog_.info("***************   Работа класса SmarthouseBean завершена   ******************");
     }
 
     /**
@@ -87,7 +112,7 @@ public class SmarthouseBean {
      *
      * @see SmarthouseBean#createTimersForIpDevices()
      */
-    private void createTimersForIpDevices(){
+    private void createTimersForIpDevices() {
         hpIloBean.requestDevice();
 
         applog_.info("Создаем таймер HP_ILO");
@@ -135,55 +160,166 @@ public class SmarthouseBean {
     /**
      * Процедура обработки события таймера
      *
-     * @see SmarthouseBean#fireTimer(Timer)
      * @param timer Ссылка на таймер класса Timer
+     * @see SmarthouseBean#fireTimer(Timer)
      */
     @SuppressWarnings("unused")
     @Timeout
     private void fireTimer(Timer timer) {
-        applog_.info("Вызвано событие таймера");
+        // IP устройства
+        applog_.info(String.format("Вызвано событие таймера. INFO=%s", timer.getInfo().toString()));
         if (timer.getInfo() == hpIloBean.getTimerName()) {
             applog_.info("Необходимо обработать устройство HP_ILO");
             hpIloBean.requestDevice();
+            return;
         }
         if (timer.getInfo() == wnr3500lBean.getTimerName()) {
             applog_.info("Необходимо обработать устройство WNR3500L");
             wnr3500lBean.requestDevice();
+            return;
         }
         if (timer.getInfo() == ps18108gBean.getTimerName()) {
             applog_.info("Необходимо обработать устройство PS1810_8G");
             ps18108gBean.requestDevice();
+            return;
         }
         if (timer.getInfo() == wn2500rpBean.getTimerName()) {
             applog_.info("Необходимо обработать устройство WN2500RP");
             wn2500rpBean.requestDevice();
+            return;
         }
         if (timer.getInfo() == tlwa850reBean.getTimerName()) {
             applog_.info("Необходимо обработать устройство TL_WA850RE");
             tlwa850reBean.requestDevice();
+            return;
         }
         if (timer.getInfo() == smsBean.getTimerName()) {
             applog_.info("Необходимо обработать устройство SMS");
             smsBean.requestDevice();
+            return;
         }
-    }
 
-    @SuppressWarnings("Duplicates")
-    @PreDestroy
-    private void destroy() {
-        applog_.info("Завершение работы класса SmarthouseBean");
+        // Устройства умного дома
+        String sql = "SELECT * FROM device_monitoring WHERE timer_name=?";
 
         try {
-            if (connection_ != null && !connection_.isClosed()) {
-                applog_.info(String.format("Закрываем соединение с базой данных. Схема БД: %s", connection_.getSchema()));
-                connection_.close();
-                applog_.info("Соединение с базой данных закрыто");
+            applog_.info("Перешли к выполнению запроса");
+            PreparedStatement stmt = connection_.prepareStatement(sql);
+            stmt.setString(1, timer.getInfo().toString());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String sqlAlarmOn = clobToString(rs.getClob("SQL_ALARM_ON"));
+                String sqlAlarmOff = clobToString(rs.getClob("SQL_ALARM_OFF"));
+                String alarmOn = rs.getString("ALARM_ON");
+                String isActive = rs.getString("IS_ACTIVE");
+                String messageOn = rs.getString("MESSAGE_ON");
+                String messageOff = rs.getString("MESSAGE_OFF");
+                long id = rs.getLong("ID");
+
+                // В зависимости от состояния таймера выполним запрос
+                String message;
+                if (alarmOn.equals("Y")) {
+                    sql = sqlAlarmOff;
+                    message = messageOff;
+                    applog_.info("Текущее состояние = Y");
+                } else {
+                    sql = sqlAlarmOn;
+                    message = messageOn;
+                    applog_.info("Текущее состояние = N");
+                }
+                applog_.debug(String.format("Выполняем SQL=%s", sql));
+                PreparedStatement stmt1 = connection_.prepareStatement(sql);
+                ResultSet rs1 = stmt1.executeQuery();
+                while (rs1.next()) {
+                    applog_.debug(String.format("Результат выполнения запроса=%d", rs1.getInt(1)));
+                    if (rs1.getInt(1) > 0) {
+                        applog_.info(String.format("Отправляем СМС=%s", message));
+                        smsBean.sendHttpGetRequest(message);
+
+                        applog_.info("Выполняем update");
+                        if (isActive.equals("Y")) {
+                            sql = "UPDATE DEVICE_MONITORING SET ALARM_ON='N', OP_DATE=sysdate WHERE ID=?";
+                        } else {
+                            sql = "UPDATE DEVICE_MONITORING SET ALARM_ON='Y', OP_DATE=sysdate WHERE ID=?";
+                        }
+
+                        PreparedStatement stmt2 = connection_.prepareStatement(sql);
+                        stmt2.setLong(1, id);
+                        stmt2.executeQuery();
+                        stmt2.close();
+                    }
+                }
+                stmt1.close();
+
+
             }
+            stmt.close();
+        } catch (SQLException e) {
+            if (e.getErrorCode() != -1403) {
+                applog_.error(e.getLocalizedMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Процедура создания таймеров для мониторинга
+     *
+     * @see SmarthouseBean#createTimersForMonitoring()
+     */
+    private void createTimersForMonitoring() {
+        applog_.info("Вошли в процедуру создания таймеров для мониторинга");
+        String sql = "SELECT * FROM device_monitoring";
+
+        try {
+            PreparedStatement stmt = connection_.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                applog_.info(String.format("Создаем таймер %s", rs.getString("TIMER_NAME")));
+
+                TimerConfig timerConfig = new TimerConfig();
+                timerConfig.setInfo(rs.getString("TIMER_NAME"));
+                // интервал надо из минут перевести в миллисекунды
+                timerService.createIntervalTimer(rs.getInt("TIME_INTERVAL") * 60 * 1000,
+                        rs.getInt("TIME_INTERVAL") * 60 * 1000, timerConfig);
+            }
+            stmt.close();
         } catch (SQLException e) {
             applog_.error(e.getLocalizedMessage());
         }
-
-        applog_.info("***************   Работа класса SmarthouseBean завершена   ******************");
+        applog_.info("Вышли из процедуры создания таймеров для мониторинга");
     }
+
+    /*********************************************************************************************
+     * From CLOB to String
+     * @param data Clob value
+     * @return string representation of clob
+     * @see SmarthouseBean#clobToString(Clob)
+     *********************************************************************************************/
+    private String clobToString(java.sql.Clob data) {
+        final StringBuilder sb = new StringBuilder();
+
+        try {
+            final Reader reader = data.getCharacterStream();
+            final BufferedReader br = new BufferedReader(reader);
+
+            int b;
+            while (-1 != (b = br.read())) {
+                sb.append((char) b);
+            }
+
+            br.close();
+        } catch (SQLException e) {
+            applog_.error("SQL. Could not convert CLOB to string", e);
+            return e.toString();
+        } catch (IOException e) {
+            applog_.error("IO. Could not convert CLOB to string", e);
+            return e.toString();
+        }
+
+        return sb.toString();
+    }
+
 
 }
