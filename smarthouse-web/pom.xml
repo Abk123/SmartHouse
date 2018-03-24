@@ -4,12 +4,12 @@
     <parent>
     <artifactId>smarthouse</artifactId>
     <groupId>ru.net.bogunino84</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
 
 
     <artifactId>smarthouse-web</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>war</packaging>
 
     <name>smarthouse-web</name>

@@ -118,7 +118,7 @@ public class EnergyMonitoringBean {
         try {
 
             connection_ = dataSource_.getConnection();
-            connection_.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection_.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             applog_.info(String.format("Соединение с базой данных выполнено. Схема БД: %s", connection_.getSchema()));
 

@@ -41,8 +41,8 @@
             <appender-ref ref='fileLogger' level='ERROR' />
         </Logger>
 
-        <Logger name='ru.net.bogunino84.SmarthouseBean' level='ERROR' additivity='true'>
-            <appender-ref ref='fileLogger' level='ALL' />
+        <Logger name='ru.net.bogunino84.SmarthouseBean' level='ALL' additivity='true'>
+            <appender-ref ref='fileLogger' level='ERROR' />
         </Logger>
     </Loggers>
 </Configuration>

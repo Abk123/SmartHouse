@@ -20,7 +20,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8.0_161" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.apache.logging.log4j:log4j-api:2.8.2" level="project" />
     <orderEntry type="library" name="org.apache.logging.log4j:log4j-core:2.8.2" level="project" />

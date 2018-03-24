@@ -201,7 +201,7 @@ public class IPDevice implements IPDeviceInterface {
         try {
             applog_.info("Осуществляем соединение с базой данных");
             connection_ = dataSource_.getConnection();
-            //connection_.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection_.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             applog_.info("Успешное соединение");
         } catch (SQLException e) {
             applog_.error(e.getLocalizedMessage());

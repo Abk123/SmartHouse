@@ -1,10 +1,10 @@
 <component name="ArtifactManager">
   <artifact type="exploded-ejb" name="smarthouse-ejb:ejb exploded">
-    <output-path>$PROJECT_DIR$/smarthouse-ejb/target/smarthouse-ejb-1.0.0</output-path>
+    <output-path>$PROJECT_DIR$/smarthouse-ejb/target/smarthouse-ejb-1.0.1</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="smarthouse-ejb/ejb/EJB" />
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/smarthouse-ejb/target/smarthouse-ejb-1.0.0/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/smarthouse-ejb/target/smarthouse-ejb-1.0.1/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="smarthouse-ejb" />
     </root>
