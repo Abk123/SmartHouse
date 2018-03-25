@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,6 +32,9 @@ public class SmarthouseAdminController extends HttpServlet {
 
     private Connection connection_;
 
+    private @EJB
+    SMSBean smsBean;
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -50,7 +55,7 @@ public class SmarthouseAdminController extends HttpServlet {
         super.destroy();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String userPath = request.getServletPath();
         applog_.info(String.format("Метод POST был отправлен на страницу %s", userPath));
@@ -125,46 +130,12 @@ public class SmarthouseAdminController extends HttpServlet {
                                 }
                                 break;
                             case "SEND_TEST_SMS":
-                                applog_.info("Читаем IP адрес устройства");
-                                sql = "SELECT ip, emergency_phone FROM sms_device_info_vw";
-                                try {
-                                    applog_.trace("Готовим SQL");
-                                    PreparedStatement stmt = connection_.prepareStatement(sql);
-                                    applog_.trace(String.format("Выполняем SQL: %s", sql));
-                                    ResultSet rs = stmt.executeQuery();
-                                    applog_.trace("Выполнили SQL. Читаем ответ.");
-                                    String ip = "";
-                                    String phone = "";
-                                    while (rs.next()) {
-                                        applog_.trace("Вошли в цикл.");
-                                        ip = rs.getString(1);
-                                        applog_.trace(String.format("Прочитали IP=%s", ip));
-                                        phone = rs.getString(2);
-                                        applog_.trace(String.format("Прочитали EMERGENCY_PHONE=%s", phone));
-                                    }
-
-                                    applog_.trace("Закрываем SQL");
-
-                                    stmt.close();
-
-                                    applog_.trace("Creating Socket...");
-                                    Socket socket = new Socket(ip, 80);
-
-                                    applog_.trace("Creating BufferedWriter...");
-                                    BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
-                                    applog_.trace("Отправляем команду");
-                                    wr.write(String.format("GET /?command=send&mobile=%s&message=%s\r\n", phone, "SMS%20Center%20OK"));
-                                    wr.write("\r\n");
-                                    wr.flush();
-                                    applog_.debug(String.format("Команда: GET /?command=send&mobile=%s&message=%s", phone, "SMS%20Center%20OK"));
-
-                                    returnMessage = "Запрос на СМС отправлен";
-                                    result = true;
-                                    applog_.trace("End sending request");
-                                } catch (SQLException e) {
-                                    applog_.error(e.getLocalizedMessage());
-                                    returnMessage = e.getLocalizedMessage();
-                                }
+                                applog_.trace("Sending SMS...");
+                                smsBean.sendHttpGetRequest("SMS%20Center%20OK");
+                                returnMessage = "Запрос на СМС отправлен";
+                                result = true;
+                                applog_.trace("End sending request");
+                                break;
                         }
                     }
                 }
@@ -185,7 +156,7 @@ public class SmarthouseAdminController extends HttpServlet {
         applog_.trace("Выход...");
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
     }
 }
