@@ -1,16 +1,16 @@
 <component name="ArtifactManager">
   <artifact type="exploded-ear" name="smarthouse-ear:ear exploded">
-    <output-path>$PROJECT_DIR$/smarthouse-ear/target/smarthouse-ear-1.0.2</output-path>
+    <output-path>$PROJECT_DIR$/smarthouse-ear/target/smarthouse-ear-1.0.4</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="smarthouse-ear/javaeeApplication/JavaEE" />
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/smarthouse-ear/target/smarthouse-ear-1.0.2/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/smarthouse-ear/target/smarthouse-ear-1.0.4/META-INF/MANIFEST.MF" />
       </element>
       <element id="dir-copy" path="$PROJECT_DIR$/smarthouse-ear/src/main/application" />
-      <element id="archive" name="smarthouse-ejb-1.0.2.jar">
+      <element id="archive" name="smarthouse-ejb-1.0.4.jar">
         <element id="artifact" artifact-name="smarthouse-ejb:ejb exploded" />
       </element>
-      <element id="archive" name="smarthouse-web-1.0.2.war">
+      <element id="archive" name="smarthouse-web-1.0.4.war">
         <element id="artifact" artifact-name="smarthouse-web:war exploded" />
       </element>
     </root>

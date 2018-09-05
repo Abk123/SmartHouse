@@ -5,20 +5,15 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Enumeration;
 
@@ -87,7 +82,7 @@ public class SmarthouseAdminController extends HttpServlet {
                         switch (method) {
                             case "SET_SMS_ATTR":
                                 String propertyValue = request.getParameterValues("value")[0].toUpperCase();
-                                Integer propertyId = Integer.valueOf(request.getParameterValues("id")[0]);
+                                int propertyId = Integer.parseInt(request.getParameterValues("id")[0]);
 
                                 if (propertyId == 3) {
                                     sql = "UPDATE device_properties SET value_number=? " +
@@ -111,24 +106,6 @@ public class SmarthouseAdminController extends HttpServlet {
                                     returnMessage = e.getLocalizedMessage();
                                 }
                                 break;
-                            case "SET_SMS_SELFTEST":
-                                String yn = request.getParameterValues("yn")[0].toUpperCase();
-                                sql = "UPDATE device_properties SET value_string=? " +
-                                        "WHERE dv_id=13 AND pr_id=10";
-                                applog_.trace("Подготовили UPDATE");
-                                try {
-                                    PreparedStatement stmt = connection_.prepareStatement(sql);
-                                    stmt.setString(1, yn);
-                                    stmt.executeQuery();
-                                    stmt.close();
-                                    returnMessage = "Данные сохранены";
-                                    applog_.trace("UPDATE выполнен");
-                                    result = true;
-                                } catch (SQLException e) {
-                                    applog_.error(e.getLocalizedMessage());
-                                    returnMessage = e.getLocalizedMessage();
-                                }
-                                break;
                             case "SEND_TEST_SMS":
                                 applog_.trace("Sending SMS...");
                                 smsBean.sendHttpGetRequest("SMS%20Center%20OK");
@@ -139,6 +116,9 @@ public class SmarthouseAdminController extends HttpServlet {
                         }
                     }
                 }
+            }
+            else{
+                returnMessage="Недостаточно привилегии";
             }
         }
 

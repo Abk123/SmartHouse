@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="ejb-jar" name="smarthouse-ejb:ejb">
     <output-path>$PROJECT_DIR$/smarthouse-ejb/target</output-path>
-    <root id="archive" name="smarthouse-ejb-1.0.2.jar">
+    <root id="archive" name="smarthouse-ejb-1.0.4.jar">
       <element id="artifact" artifact-name="smarthouse-ejb:ejb exploded" />
     </root>
   </artifact>
