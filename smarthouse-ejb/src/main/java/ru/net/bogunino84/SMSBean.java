@@ -9,6 +9,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,9 +37,9 @@ public class SMSBean extends IPDevice {
         Connection connection = super.getConnection();
         String sql = "SELECT dp.value_string " +
                 "FROM device_properties dp " +
-                "JOIN devices dv ON dv.dv_id=dp.dv_id" +
+                "JOIN devices dv ON dv.dv_id=dp.dv_dv_id" +
                 "  AND dv.dv_abbr=? " +
-                "JOIN properties pr ON pr.pr_id=dp.pr_id" +
+                "JOIN properties pr ON pr.pr_id=dp.pr_pr_id" +
                 "  AND pr.pr_abbr=?";
 
         try {
@@ -76,9 +77,9 @@ public class SMSBean extends IPDevice {
             Connection connection = super.getConnection();
             String sql = "SELECT dp.value_string " +
                     "FROM device_properties dp " +
-                    "JOIN devices dv ON dv.dv_id=dp.dv_id" +
+                    "JOIN devices dv ON dv.dv_id=dp.dv_dv_id" +
                     "  AND dv.dv_abbr=? " +
-                    "JOIN properties pr ON pr.pr_id=dp.pr_id" +
+                    "JOIN properties pr ON pr.pr_id=dp.pr_pr_id" +
                     "  AND pr.pr_abbr=?";
 
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -108,7 +109,7 @@ public class SMSBean extends IPDevice {
             Socket socket = new Socket(ipAddress, 80);
 
             applog_.trace("Creating BufferedWriter...");
-            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
+            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             wr.write(String.format("GET /?command=send&mobile=%s&message=%s\r\n", emergencyPhone, message));
 
             wr.write("\r\n");
@@ -123,9 +124,7 @@ public class SMSBean extends IPDevice {
             }
             wr.close();
             rd.close();
-        } catch (IOException e) {
-            applog_.error(e.getLocalizedMessage());
-        } catch (SQLException e) {
+        } catch (IOException | SQLException e) {
             applog_.error(e.getLocalizedMessage());
         }
 

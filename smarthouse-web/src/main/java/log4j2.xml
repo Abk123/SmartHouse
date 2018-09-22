@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Configuration status='warn' monitorInterval="60">
     <Properties>
-        <Property name='basePath'>/home/oracle/app/Middleware/Oracle_Home/user_projects/domains/base_domain/myapps/smarthouse</Property>
+        <Property name='basePath'>/home/jboss/EAP-7.1.0/log</Property>
     </Properties>
 
     <Appenders>
@@ -49,8 +49,8 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name='ru.net.bogunino84' level='ERROR' additivity='true'>
-            <appender-ref ref='webFileLogger' level='ERROR' />
+        <Logger name='ru.net.bogunino84' level='ALL' additivity='true'>
+            <appender-ref ref='webFileLogger' level='ALL' />
         </Logger>
         <Root level='ERROR' additivity='false'>
             <appender-ref ref='fileBase' />

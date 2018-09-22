@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Built-By: andreikosogorov
-Created-By: IntelliJ IDEA
-Build-Jdk: 1.8.0_131
-Class-Path: log4j-api-2.8.2.jar;log4j-core-2.8.2.jar;jssc-2.8.0.jar
-
-

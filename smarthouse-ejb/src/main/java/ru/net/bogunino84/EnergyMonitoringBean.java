@@ -22,8 +22,8 @@ import java.sql.SQLException;
 @Singleton(name = "EnergyMonitoringEJB")
 @LocalBean
 @Startup
-//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EnergyMonitoringBean {
+
 
     /**
      * Логгер
@@ -37,6 +37,7 @@ public class EnergyMonitoringBean {
      */
     private static final int MAX_PAGE_LENGTH = 256;
 
+
     /**
      * Ссылка на класс последовательного порта Доминатора
      *
@@ -46,8 +47,89 @@ public class EnergyMonitoringBean {
     private DominatorSerialPort port_;
 
 
-    @Resource(mappedName = "jdbc/SMARTDB", type = DataSource.class)
+    @Resource(lookup = "java:jboss/SMARTDB", type = DataSource.class)
     private DataSource dataSource_;
+
+    @Resource
+    private TimerService timerService;
+
+    /**
+     * Процедура создания таймеров для работы с Доминатором
+     *
+     * @see EnergyMonitoringBean#createTimers()
+     */
+    void createTimers() {
+
+        TimerConfig timerConfig1 = new TimerConfig();
+        timerConfig1.setPersistent(false);
+
+        applog_.trace("Выделили память для TimerConfig1");
+        timerConfig1.setInfo("CHECK_SERIAL_PORT");
+        applog_.trace("Записали аббревиатуру таймера CHECK_SERIAL_PORT");
+        ScheduleExpression scheduleExpression1 = new ScheduleExpression();
+        applog_.trace("Выделили память для ScheduleExpression1");
+
+        scheduleExpression1.second("0");
+        scheduleExpression1.minute("*/1");
+        scheduleExpression1.hour("*");
+        scheduleExpression1.dayOfWeek("*");
+        scheduleExpression1.dayOfMonth("*");
+        scheduleExpression1.month("*");
+        scheduleExpression1.year("*");
+
+        applog_.info("Создаем таймер");
+
+        timerService.createCalendarTimer(scheduleExpression1, timerConfig1);
+
+        applog_.info("Таймер CHECK_SERIAL_PORT создан");
+
+        TimerConfig timerConfig2 = new TimerConfig();
+        timerConfig2.setPersistent(false);
+
+        applog_.trace("Выделили память для TimerConfig2");
+        timerConfig2.setInfo("DOMINATOR_STAT");
+        applog_.trace("Записали аббревиатуру таймера DOMINATOR_STAT");
+        ScheduleExpression scheduleExpression2 = new ScheduleExpression();
+        applog_.trace("Выделили память для ScheduleExpression2");
+
+        scheduleExpression2.second("*/5");
+        scheduleExpression2.minute("*");
+        scheduleExpression2.hour("*");
+        scheduleExpression2.dayOfWeek("*");
+        scheduleExpression2.dayOfMonth("*");
+        scheduleExpression2.month("*");
+        scheduleExpression2.year("*");
+
+        applog_.info("Создаем таймер");
+
+        timerService.createCalendarTimer(scheduleExpression2, timerConfig2);
+
+        applog_.info("Таймер DOMINATOR_STAT создан");
+    }
+
+    /**
+     * Процедура обработки события таймера
+     *
+     * @param timer Ссылка на таймер класса Timer
+     * @see EnergyMonitoringBean#fireTimer(Timer)
+     */
+    @SuppressWarnings("unused")
+    @Timeout
+    private void fireTimer(Timer timer) {
+        String timerInfo = timer.getInfo().toString();
+
+        applog_.info(String.format("Перешли к выполнению запроса от таймера %s", timerInfo));
+
+        if (timerInfo.equals("DOMINATOR_STAT")) {
+            applog_.info("Необходимо обработать ячейки памяти");
+            writeStat();
+        }
+
+        if (timerInfo.equals("CHECK_SERIAL_PORT")) {
+            applog_.info("Необходимо проверить Serial Port");
+            checkSerialPort();
+        }
+    }
 
 
     /**
@@ -68,9 +150,11 @@ public class EnergyMonitoringBean {
         return connection_;
     }
 
-    @Schedule(minute = "*/1", hour = "*", info = "Таймер для метода checkSerialPort")
+
     private void checkSerialPort() {
+
         String yn;
+
         if (port_.checkDominatorPort()) {
             yn = "Y";
         } else {
@@ -82,20 +166,22 @@ public class EnergyMonitoringBean {
 
 
         try {
-            sql = "UPDATE devices SET active=? WHERE dv_id=?";
+            sql = "UPDATE devices SET is_active=? WHERE dv_id=?";
             stmt_ = connection_.prepareStatement(sql);
             stmt_.setString(1, yn);
             stmt_.setInt(2, 1);
 
-            stmt_.executeQuery();
+            stmt_.executeUpdate();
+
             stmt_.close();
 
-            sql = "UPDATE device_properties SET value_date=sysdate WHERE dv_id=? AND pr_id=?";
+            sql = "UPDATE device_properties SET value_date=sysdate() WHERE dv_dv_id=? AND pr_pr_id=?";
             stmt_ = connection_.prepareStatement(sql);
             stmt_.setInt(1, 1);
             stmt_.setInt(2, 1);
 
-            stmt_.executeQuery();
+            stmt_.executeUpdate();
+
             stmt_.close();
 
         } catch (SQLException e) {
@@ -104,12 +190,47 @@ public class EnergyMonitoringBean {
 
     }
 
+    private void createDominatorPort() {
 
-    @SuppressWarnings("Duplicates")
+        String sql = "UPDATE device_properties dp\n" +
+                "   SET dp.value_string = ?\n" +
+                " WHERE dp.dv_dv_id = 1 AND dp.pr_pr_id = 5";
+
+        applog_.info("Создаем переменную port_");
+        port_ = new DominatorSerialPort();
+
+        applog_.info("Инициализируем порт Доминатора");
+        if (port_.initDominatorPort()) {
+            try {
+                PreparedStatement stmt = connection_.prepareStatement(sql);
+                stmt.setString(1, port_.getPortName());
+                stmt.executeUpdate();
+
+                stmt.close();
+                createTimers();
+            } catch (SQLException e) {
+                applog_.error(e.getLocalizedMessage());
+            }
+        } else {
+            try {
+                PreparedStatement stmt = connection_.prepareStatement(sql);
+                stmt.setString(1, "");
+                stmt.executeUpdate();
+
+                stmt.close();
+            } catch (SQLException e) {
+                applog_.error(e.getLocalizedMessage());
+            }
+        }
+    }
+
+
+    //@SuppressWarnings("Duplicates")
     @PostConstruct
     private void init() {
 
         applog_.info("***************   Идет инициализация класса EnergyMonitoringBean   ******************");
+
         applog_.info(String.format("Уровень логирования= %s", applog_.getLevel().toString()));
 
 
@@ -118,7 +239,7 @@ public class EnergyMonitoringBean {
         try {
 
             connection_ = dataSource_.getConnection();
-            connection_.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
 
             applog_.info(String.format("Соединение с базой данных выполнено. Схема БД: %s", connection_.getSchema()));
 
@@ -126,33 +247,7 @@ public class EnergyMonitoringBean {
             applog_.error(e.getLocalizedMessage());
         }
 
-        String sql = "UPDATE DEVICE_PROPERTIES dp\n" +
-                "   SET DP.VALUE_STRING = ?\n" +
-                " WHERE DP.DV_ID = 1 AND DP.PR_ID = 5";
-
-        applog_.info("Инициализируем порт Доминатора");
-        port_ = new DominatorSerialPort();
-
-        if (port_.initDominatorPort()) {
-            try {
-                PreparedStatement stmt = connection_.prepareStatement(sql);
-                stmt.setString(1, port_.getPortName());
-                stmt.executeQuery();
-                stmt.close();
-            } catch (SQLException e) {
-                applog_.error(e.getLocalizedMessage());
-            }
-        } else {
-            try {
-                PreparedStatement stmt = connection_.prepareStatement(sql);
-                stmt.setString(1, "");
-                stmt.executeQuery();
-                stmt.close();
-            } catch (SQLException e) {
-                applog_.error(e.getLocalizedMessage());
-            }
-        }
-
+        createDominatorPort();
 
     }
 
@@ -162,6 +257,10 @@ public class EnergyMonitoringBean {
         applog_.info("Завершение работы класса EnergyMonitoringBean");
 
         port_.destroyDominatorPort();
+
+        for (Timer timer : timerService.getAllTimers()) {
+            timer.cancel();
+        }
 
         try {
             if (connection_ != null && !connection_.isClosed()) {
@@ -178,13 +277,13 @@ public class EnergyMonitoringBean {
 
     }
 
-    @Schedule(second = "*/5", minute = "*", hour = "*", info = "Таймер для метода writeStat")
+
     private void writeStat() {
 
         applog_.info("Проверяем соединение с базой данных");
         if (connection_ != null) {
             try {
-                PreparedStatement statStmt = connection_.prepareStatement("SELECT table_name, hour, date_str, cell_name, cell_address, dmc_id, create_stat_table FROM DM_CELLS_READ_VW");
+                PreparedStatement statStmt = connection_.prepareStatement("SELECT table_name, hour, date_str, cell_name, cell_address, dmc_id, create_stat_table FROM dm_cells_read_vw");
 
                 //while (true) {
                 applog_.info("Получаем список ячеек для чтения");
@@ -212,7 +311,7 @@ public class EnergyMonitoringBean {
 
                             if (statRs.getString("create_stat_table").equals("Y")) {
 
-                                sql = String.format("INSERT INTO %s(op_date, stat_value, hour) VALUES(to_date(?,'dd.mm.yyyy hh24:mi:ss'), ?, ?)", tableName);
+                                sql = String.format("INSERT INTO %s(op_date, stat_value, hour) VALUES(str_to_date(?,'%%d.%%m.%%Y %%H:%%i:%%s'), ?, ?)", tableName);
                                 applog_.debug(String.format("SQL= %s", sql));
                                 stmt_ = connection_.prepareStatement(sql);
 
@@ -228,17 +327,19 @@ public class EnergyMonitoringBean {
                                 stmt_.setString(3, statRs.getString("hour"));
                                 applog_.debug(String.format("Значение 3-го параметра: %s", statRs.getString("hour")));
 
-                                stmt_.executeQuery();
+                                stmt_.executeUpdate();
+
                                 stmt_.close();
                             }
 
                             // Записываем текущее состояние
-                            int dmc_id = statRs.getInt("DMC_ID");
-                            sql = "UPDATE DM_CELLS SET current_value=?, last_update_time=sysdate WHERE DMC_ID=?";
+                            int dmc_id = statRs.getInt("dmc_id");
+                            sql = "UPDATE dm_cells SET current_value=?, last_update_time=sysdate() WHERE dmc_id=?";
                             stmt_ = connection_.prepareStatement(sql);
                             stmt_.setInt(1, data);
                             stmt_.setInt(2, dmc_id);
-                            stmt_.executeQuery();
+                            stmt_.executeUpdate();
+
                             stmt_.close();
                         }
 

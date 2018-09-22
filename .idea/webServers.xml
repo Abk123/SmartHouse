@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="fab82eba-bb39-4388-afc3-60be9f843c5e" name="SMARTHOUSE_FTP" url="http://bogunino84.net.ru">
-        <fileTransfer host="bogunino84.net.ru" port="21" rootFolder="/home/oracle/smarthouse_app">
+        <fileTransfer host="bogunino84.net.ru" port="21" rootFolder="/home/abk">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>

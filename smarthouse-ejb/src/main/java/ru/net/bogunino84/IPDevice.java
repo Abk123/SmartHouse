@@ -120,7 +120,7 @@ public class IPDevice implements IPDeviceInterface {
      *
      * @see IPDevice#dataSource_
      */
-    @Resource(mappedName = "jdbc/SMARTDB", type = DataSource.class)
+    @Resource(lookup = "java:jboss/SMARTDB", type = DataSource.class)
     private DataSource dataSource_;
 
     /**
@@ -152,14 +152,15 @@ public class IPDevice implements IPDeviceInterface {
      */
     @Override
     public void setEnabled() {
-        String sql = "UPDATE DEVICES dv\n" +
-                "   SET DV.ENABLED = 'Y'\n" +
-                " WHERE DV.DV_ABBR = ?";
+        String sql = "UPDATE devices dv\n" +
+                "   SET dv.is_enabled = 'Y'\n" +
+                " WHERE dv.dv_abbr = ?";
 
         try {
             PreparedStatement stmt = connection_.prepareStatement(sql);
             stmt.setString(1, abbreviation_);
-            stmt.executeQuery();
+            stmt.executeUpdate();
+
             stmt.close();
             isEnabled_ = true;
 
@@ -176,14 +177,15 @@ public class IPDevice implements IPDeviceInterface {
      */
     @Override
     public void setDisabled() {
-        String sql = "UPDATE DEVICES dv\n" +
-                "   SET DV.ENABLED = 'N'\n" +
-                " WHERE DV.DV_ABBR = ?";
+        String sql = "UPDATE devices dv\n" +
+                "   SET dv.is_enabled = 'N'\n" +
+                " WHERE dv.dv_abbr = ?";
 
         try {
             PreparedStatement stmt = connection_.prepareStatement(sql);
             stmt.setString(1, abbreviation_);
-            stmt.executeQuery();
+            stmt.executeUpdate();
+
             stmt.close();
             isEnabled_ = false;
         } catch (SQLException e) {
@@ -201,7 +203,7 @@ public class IPDevice implements IPDeviceInterface {
         try {
             applog_.info("Осуществляем соединение с базой данных");
             connection_ = dataSource_.getConnection();
-            connection_.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             applog_.info("Успешное соединение");
         } catch (SQLException e) {
             applog_.error(e.getLocalizedMessage());
@@ -231,14 +233,14 @@ public class IPDevice implements IPDeviceInterface {
      */
     private void readAttributesFromDatabase(){
         applog_.trace("Читаем IP адрес устройства");
-        String sql = "  SELECT MAX (CASE WHEN dpr.pr_id = 2 THEN dpr.value_string END) ip_address,\n" +
-                "         MAX (CASE WHEN dpr.pr_id = 3 THEN dpr.value_number END) update_time,\n" +
-                "         dv.active,\n" +
-                "         dv.enabled,\n" +
+        String sql = "  SELECT MAX(CASE WHEN dpr.pr_pr_id = 2 THEN dpr.value_string END) ip_address,\n" +
+                "         MAX(CASE WHEN dpr.pr_pr_id = 3 THEN dpr.value_number END) update_time,\n" +
+                "         dv.is_active,\n" +
+                "         dv.is_enabled,\n" +
                 "         dv.dv_id\n" +
-                "    FROM devices dv JOIN device_properties dpr ON dpr.dv_id = dv.dv_id AND dpr.pr_id IN (2, 3)\n" +
+                "    FROM devices dv JOIN device_properties dpr ON dpr.dv_dv_id = dv.dv_id AND dpr.pr_pr_id IN (2, 3)\n" +
                 "   WHERE dv.dv_abbr = ?\n" +
-                "GROUP BY dv.active, dv.enabled, dv.dv_id";
+                "GROUP BY dv.is_active, dv.is_enabled, dv.dv_id";
         try {
             PreparedStatement stmt = connection_.prepareStatement(sql);
             stmt.setString(1, abbreviation_);
@@ -318,23 +320,25 @@ public class IPDevice implements IPDeviceInterface {
 
         applog_.debug(String.format("Результат пинга=%s", result));
 
-        String sql = "UPDATE DEVICES dv\n" +
-                "   SET DV.ACTIVE = ?\n" +
-                " WHERE DV.DV_ABBR = ?";
+        String sql = "UPDATE devices dv\n" +
+                "   SET dv.is_active = ?\n" +
+                " WHERE dv.dv_abbr = ?";
 
         try {
             applog_.info("Сохраняем результаты в БД");
             PreparedStatement stmt = connection_.prepareStatement(sql);
             stmt.setString(1, result);
             stmt.setString(2, abbreviation_);
-            stmt.executeQuery();
+            stmt.executeUpdate();
+
             isActive_ = result.equals("Y");
             stmt.close();
 
-            sql = "UPDATE DEVICE_PROPERTIES pr SET pr.VALUE_DATE=sysdate WHERE pr.DV_ID=? AND pr.PR_ID=1";
+            sql = "UPDATE device_properties pr SET pr.value_date=sysdate() WHERE pr.dv_dv_id=? AND pr.pr_pr_id=1";
             stmt = connection_.prepareStatement(sql);
             stmt.setInt(1, id_);
-            stmt.executeQuery();
+            stmt.executeUpdate();
+
             stmt.close();
             applog_.info("Результаты сохранены.");
 

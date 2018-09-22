@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Configuration status='warn' monitorInterval="60">
     <Properties>
-        <Property name='basePath'>/home/oracle/app/Middleware/Oracle_Home/user_projects/domains/base_domain/myapps/smarthouse</Property>
+        <Property name='basePath'>/home/jboss/EAP-7.1.0/log</Property>
     </Properties>
 
     <Appenders>
@@ -41,8 +41,13 @@
             <appender-ref ref='fileLogger' level='ERROR' />
         </Logger>
 
-        <Logger name='ru.net.bogunino84.SmarthouseBean' level='ALL' additivity='true'>
-            <appender-ref ref='fileLogger' level='ERROR' />
+        <Logger name='ru.net.bogunino84.DominatorSerialPort' level='ALL' additivity='true'>
+            <appender-ref ref='fileLogger' level='ALL' />
         </Logger>
+
+        <Logger name='ru.net.bogunino84.EnergyMonitoringBean' level='ALL' additivity='true'>
+            <appender-ref ref='fileLogger' level='ALL' />
+        </Logger>
+
     </Loggers>
 </Configuration>

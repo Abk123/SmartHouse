@@ -7,9 +7,8 @@
           <element id="module-output" name="smarthouse-web" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="smarthouse-ejb-1.0.4.jar">
-            <element id="module-output" name="smarthouse-ejb" />
-          </element>
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.8.2" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.8.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">

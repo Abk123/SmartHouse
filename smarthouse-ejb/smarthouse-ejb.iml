@@ -3,9 +3,6 @@
   <component name="FacetManager">
     <facet type="ejb" name="EJB">
       <configuration>
-        <descriptors>
-          <deploymentDescriptor name="weblogic-ejb-jar.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/weblogic-ejb-jar.xml" />
-        </descriptors>
         <ejbRoots>
           <root url="file://$MODULE_DIR$/src/main/java" />
           <root url="file://$MODULE_DIR$/src/main/resources" />
@@ -21,13 +18,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="1.8.0_161" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.scream3r:jssc:2.8.0" level="project" />
-    <orderEntry type="library" name="org.apache.logging.log4j:log4j-api:2.8.2" level="project" />
-    <orderEntry type="library" name="org.apache.logging.log4j:log4j-core:2.8.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-api:7.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.mail:javax.mail:1.5.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.activation:activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.scream3r:jssc:2.8.0" level="project" />
   </component>
 </module>

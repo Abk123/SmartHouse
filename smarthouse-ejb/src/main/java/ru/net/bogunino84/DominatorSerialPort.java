@@ -11,6 +11,10 @@ import jssc.SerialPortTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.LocalBean;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -186,7 +190,7 @@ public class DominatorSerialPort {
         data = data & 0xFF;
 
         applog_.info(String.format("Отправляем байт= %x", data));
-        if (serialPort_!=null && !serialPort_.writeInt(data)) {
+        if (serialPort_ != null && !serialPort_.writeInt(data)) {
             throw new SerialPortException(serialPort_.getPortName(), "serialPort_.writeInt", "Ошибка отправки байта");
         }
 
@@ -274,7 +278,7 @@ public class DominatorSerialPort {
 
         //needToCheckDominatorPort_ = false;
 
-        if (serialPort_!=null && serialPort_.isOpened()) {
+        if (serialPort_ != null && serialPort_.isOpened()) {
             int data[] = new int[MAX_PAGE_LENGTH];
             int numBytes = readFromMemory(data, 0x00, 1);
             applog_.info(String.format("Прочитали %d байт", numBytes));
@@ -686,7 +690,7 @@ public class DominatorSerialPort {
         //Длина страницы определяется количеством элементов в массиве
         int length = data.length;
 
-        if (serialPort_!=null && serialPort_.isOpened()) {
+        if (serialPort_ != null && serialPort_.isOpened()) {
             if (length <= MAX_PAGE_LENGTH) {
 
                 if (address <= MAX_MEMORY_ADDRESS) {

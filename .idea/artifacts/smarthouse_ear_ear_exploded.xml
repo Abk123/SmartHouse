@@ -10,6 +10,11 @@
       <element id="archive" name="smarthouse-ejb-1.0.4.jar">
         <element id="artifact" artifact-name="smarthouse-ejb:ejb exploded" />
       </element>
+      <element id="directory" name="lib">
+        <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.8.2" />
+        <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.8.2" />
+        <element id="library" level="project" name="Maven: org.scream3r:jssc:2.8.0" />
+      </element>
       <element id="archive" name="smarthouse-web-1.0.4.war">
         <element id="artifact" artifact-name="smarthouse-web:war exploded" />
       </element>

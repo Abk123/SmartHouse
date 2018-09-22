@@ -22,33 +22,25 @@ public class SmarthouseAdminController extends HttpServlet {
 
     private final static Logger applog_ = LogManager.getLogger(SmarthouseAdminController.class);
 
-    @Resource(mappedName = "jdbc/SMARTDB_WEB", type = DataSource.class)
+    @Resource(lookup = "java:jboss/SMARTDB", type = DataSource.class)
     private DataSource dataSource_;
 
     private Connection connection_;
 
-    private @EJB
-    SMSBean smsBean;
+    //private @EJB
+    //SMSBean smsBean;
 
     @Override
     public void init() throws ServletException {
         super.init();
         try {
             connection_ = dataSource_.getConnection();
+
         } catch (SQLException e) {
             applog_.error(e.getLocalizedMessage());
         }
     }
 
-    @Override
-    public void destroy() {
-        try {
-            connection_.close();
-        } catch (SQLException e) {
-            applog_.error(e.getLocalizedMessage());
-        }
-        super.destroy();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -79,6 +71,7 @@ public class SmarthouseAdminController extends HttpServlet {
 
                         String sql;
 
+
                         switch (method) {
                             case "SET_SMS_ATTR":
                                 String propertyValue = request.getParameterValues("value")[0].toUpperCase();
@@ -86,17 +79,18 @@ public class SmarthouseAdminController extends HttpServlet {
 
                                 if (propertyId == 3) {
                                     sql = "UPDATE device_properties SET value_number=? " +
-                                            "WHERE dv_id=13 AND pr_id=?";
+                                            "WHERE dv_dv_id=13 AND pr_pr_id=?";
                                 } else {
                                     sql = "UPDATE device_properties SET value_string=? " +
-                                            "WHERE dv_id=13 AND pr_id=?";
+                                            "WHERE dv_dv_id=13 AND pr_pr_id=?";
                                 }
                                 applog_.trace("Подготовили UPDATE");
                                 try {
                                     PreparedStatement stmt = connection_.prepareStatement(sql);
                                     stmt.setString(1, propertyValue);
                                     stmt.setInt(2, propertyId);
-                                    stmt.executeQuery();
+                                    stmt.executeUpdate();
+
                                     stmt.close();
                                     returnMessage = "Данные сохранены";
                                     applog_.trace("UPDATE выполнен");
@@ -108,7 +102,7 @@ public class SmarthouseAdminController extends HttpServlet {
                                 break;
                             case "SEND_TEST_SMS":
                                 applog_.trace("Sending SMS...");
-                                smsBean.sendHttpGetRequest("SMS%20Center%20OK");
+                                //smsBean.sendHttpGetRequest("SMS%20Center%20OK");
                                 returnMessage = "Запрос на СМС отправлен";
                                 result = true;
                                 applog_.trace("End sending request");
@@ -116,9 +110,8 @@ public class SmarthouseAdminController extends HttpServlet {
                         }
                     }
                 }
-            }
-            else{
-                returnMessage="Недостаточно привилегии";
+            } else {
+                returnMessage = "Недостаточно привилегии";
             }
         }
 
