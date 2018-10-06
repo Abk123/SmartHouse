@@ -1,7 +1,8 @@
 package ru.net.bogunino84;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -19,7 +20,7 @@ public class IPDevice implements IPDeviceInterface {
      *
      * @see IPDevice#applog_
      */
-    private final static Logger applog_ = LogManager.getLogger(IPDevice.class);
+    private final static Logger applog_ = LoggerFactory.getLogger(IPDevice.class);
 
     /**
      * Соединение с базой данных

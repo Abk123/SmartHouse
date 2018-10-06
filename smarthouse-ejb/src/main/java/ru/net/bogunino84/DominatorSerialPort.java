@@ -8,8 +8,8 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import jssc.SerialPortTimeoutException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -32,7 +32,7 @@ public class DominatorSerialPort {
      *
      * @see DominatorSerialPort#applog_
      */
-    private final static Logger applog_ = LogManager.getLogger(DominatorSerialPort.class);
+    private final static Logger applog_ = LoggerFactory.getLogger(DominatorSerialPort.class);
 
     /**
      * Переменная, отвечающая за блокирование последовательного порта

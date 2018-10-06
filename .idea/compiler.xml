@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="smarthouse-ear" />
         <module name="smarthouse-ejb" />
+        <module name="smarthouse-lib" />
         <module name="smarthouse-web" />
       </profile>
     </annotationProcessing>
@@ -15,6 +16,7 @@
       <module name="smarthouse" target="1.5" />
       <module name="smarthouse-ear" target="1.7" />
       <module name="smarthouse-ejb" target="1.7" />
+      <module name="smarthouse-lib" target="1.7" />
       <module name="smarthouse-web" target="1.7" />
     </bytecodeTargetLevel>
   </component>

@@ -1,18 +1,19 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="smarthouse-web:war exploded">
-    <output-path>$PROJECT_DIR$/smarthouse-web/target/smarthouse-web-1.0.4</output-path>
+    <output-path>$PROJECT_DIR$/smarthouse-web/target/smarthouse-web-1.0.5</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="smarthouse-web" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.8.2" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.8.2" />
+          <element id="archive" name="smarthouse-lib-1.0.5.jar">
+            <element id="module-output" name="smarthouse-lib" />
+          </element>
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/smarthouse-web/target/smarthouse-web-1.0.4/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/smarthouse-web/target/smarthouse-web-1.0.5/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="smarthouse-web/web/Web" />
     </root>

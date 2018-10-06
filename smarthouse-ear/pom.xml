@@ -5,11 +5,11 @@
     <parent>
         <artifactId>smarthouse</artifactId>
         <groupId>ru.net.bogunino84</groupId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
     <artifactId>smarthouse-ear</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>ear</packaging>
 
     <name>smarthouse-ear</name>
@@ -36,6 +36,7 @@
                 <configuration>
                     <version>6</version>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <packagingExcludes>lib/jssc-2.8.0.jar</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>
@@ -44,13 +45,13 @@
         <dependency>
             <groupId>ru.net.bogunino84</groupId>
             <artifactId>smarthouse-ejb</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>ru.net.bogunino84</groupId>
             <artifactId>smarthouse-web</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
             <type>war</type>
         </dependency>
     </dependencies>

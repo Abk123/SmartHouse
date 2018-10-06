@@ -1,7 +1,7 @@
 package ru.net.bogunino84;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,7 +30,7 @@ public class EnergyMonitoringBean {
      *
      * @see EnergyMonitoringBean#applog_
      */
-    private final static Logger applog_ = LogManager.getLogger(EnergyMonitoringBean.class);
+    private final static Logger applog_ = LoggerFactory.getLogger(EnergyMonitoringBean.class);
 
     /**
      * Максимальная длина страницы
@@ -231,7 +231,6 @@ public class EnergyMonitoringBean {
 
         applog_.info("***************   Идет инициализация класса EnergyMonitoringBean   ******************");
 
-        applog_.info(String.format("Уровень логирования= %s", applog_.getLevel().toString()));
 
 
         applog_.info("Осуществляем соединение с базой данных");

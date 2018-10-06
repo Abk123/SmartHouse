@@ -1,7 +1,7 @@
 package ru.net.bogunino84;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -23,7 +23,7 @@ import java.sql.SQLException;
  */
 @Singleton(name = "SmarthouseEJB")
 @LocalBean
-//@Startup
+@Startup
 public class SmarthouseBean {
     public SmarthouseBean() {
     }
@@ -62,7 +62,7 @@ public class SmarthouseBean {
      *
      * @see SmarthouseBean#applog_
      */
-    private final static Logger applog_ = LogManager.getLogger(SmarthouseBean.class);
+    private final static Logger applog_ = LoggerFactory.getLogger(SmarthouseBean.class);
 
     @Resource(lookup = "java:jboss/SMARTDB", type = DataSource.class)
     private DataSource dataSource_;
@@ -72,7 +72,7 @@ public class SmarthouseBean {
     private void init() {
 
         applog_.info("***************   Идет инициализация класса SmarthouseBean   ******************");
-        applog_.info(String.format("Уровень логирования= %s", applog_.getLevel().toString()));
+
 
         applog_.info("Осуществляем соединение с базой данных");
 
@@ -282,7 +282,9 @@ public class SmarthouseBean {
                         applog_.debug(String.format("Результат выполнения запроса=%d", rs1.getInt(1)));
                         if (rs1.getInt(1) > 0) {
                             applog_.info(String.format("Отправляем СМС=%s", message));
-                            smsBean.sendHttpGetRequest(message);
+                            SmsCenter smsCenter=new SmsCenter();
+                            smsCenter.sendSMS(message);
+
 
                             applog_.info("Выполняем update");
                             if (alarmOn.equals("Y")) {

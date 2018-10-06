@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.net.bogunino84</groupId>
     <artifactId>smarthouse</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>pom</packaging>
     <name>smarthouse</name>
     <modules>
         <module>smarthouse-ear</module>
         <module>smarthouse-web</module>
         <module>smarthouse-ejb</module>
+        <module>smarthouse-lib</module>
     </modules>
 
 </project>

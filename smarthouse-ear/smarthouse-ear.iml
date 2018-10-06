@@ -19,12 +19,9 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.apache.logging.log4j:log4j-api:2.8.2" level="project" />
-    <orderEntry type="library" name="org.apache.logging.log4j:log4j-core:2.8.2" level="project" />
     <orderEntry type="module" module-name="smarthouse-ejb" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.scream3r:jssc:2.8.0" level="project" />
+    <orderEntry type="module" module-name="smarthouse-lib" />
     <orderEntry type="module" module-name="smarthouse-web" />
+    <orderEntry type="library" name="ch.qos.logback:logback-classic:1.2.3" level="project" />
   </component>
 </module>

@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/smarthouse.iml" filepath="$PROJECT_DIR$/smarthouse.iml" />
       <module fileurl="file://$PROJECT_DIR$/smarthouse-ear/smarthouse-ear.iml" filepath="$PROJECT_DIR$/smarthouse-ear/smarthouse-ear.iml" />
       <module fileurl="file://$PROJECT_DIR$/smarthouse-ejb/smarthouse-ejb.iml" filepath="$PROJECT_DIR$/smarthouse-ejb/smarthouse-ejb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smarthouse-lib/smarthouse-lib.iml" filepath="$PROJECT_DIR$/smarthouse-lib/smarthouse-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/smarthouse-web/smarthouse-web.iml" filepath="$PROJECT_DIR$/smarthouse-web/smarthouse-web.iml" />
     </modules>
   </component>

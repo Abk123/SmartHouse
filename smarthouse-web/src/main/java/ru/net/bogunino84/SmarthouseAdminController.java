@@ -1,10 +1,9 @@
 package ru.net.bogunino84;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +19,7 @@ import java.util.Enumeration;
 @WebServlet(name = "SmarthouseAdminController", urlPatterns = "/SmarthouseAdminController")
 public class SmarthouseAdminController extends HttpServlet {
 
-    private final static Logger applog_ = LogManager.getLogger(SmarthouseAdminController.class);
+    private final static Logger applog_ = LoggerFactory.getLogger(SmarthouseAdminController.class);
 
     @Resource(lookup = "java:jboss/SMARTDB", type = DataSource.class)
     private DataSource dataSource_;
@@ -35,6 +34,17 @@ public class SmarthouseAdminController extends HttpServlet {
         super.init();
         try {
             connection_ = dataSource_.getConnection();
+
+        } catch (SQLException e) {
+            applog_.error(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void destroy(){
+        super.destroy();
+        try {
+            connection_.close();
 
         } catch (SQLException e) {
             applog_.error(e.getLocalizedMessage());
@@ -102,6 +112,8 @@ public class SmarthouseAdminController extends HttpServlet {
                                 break;
                             case "SEND_TEST_SMS":
                                 applog_.trace("Sending SMS...");
+                                SmsCenter smsCenter=new SmsCenter();
+                                smsCenter.sendSMS("SMS%20Center%20OK");
                                 //smsBean.sendHttpGetRequest("SMS%20Center%20OK");
                                 returnMessage = "Запрос на СМС отправлен";
                                 result = true;

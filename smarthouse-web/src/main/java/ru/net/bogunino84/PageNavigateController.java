@@ -1,7 +1,7 @@
 package ru.net.bogunino84;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +20,7 @@ import java.util.Enumeration;
 @WebServlet(name = "PageNavigateController", urlPatterns = "/PageNavigateController")
 public class PageNavigateController extends HttpServlet {
 
-    private final static Logger applog_ = LogManager.getLogger(PageNavigateController.class);
+    private final static Logger applog_ = LoggerFactory.getLogger(PageNavigateController.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
